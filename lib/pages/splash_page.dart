@@ -1,7 +1,16 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'dart:convert';
 
+//packages
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+
+//services
+import '../services/http_service.dart';
+import '../services/movie_service.dart';
+
+//model
+import '../model/app_config.dart';
 // class SplashPage extends StatefulWidget {
 //   final VoidCallback onInitializationComplete;
 
@@ -34,6 +43,37 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 1)).then(
+      (_) => _setup(context).then(
+        (_) => widget.onInitializationComplete(),
+      ),
+    );
+  }
+
+  Future<void> _setup(BuildContext _context) async {
+    final getIt = GetIt.instance;
+
+    final configFile = await rootBundle.loadString('assets/config/main.json');
+    final configData = jsonDecode(configFile);
+
+    getIt.registerSingleton<AppConfig>(
+      AppConfig(
+        BASE_API_URL: configData['BASE_API_URL'],
+        BASE_IMAGE_API_URL: configData['BASE_IMAGE_API_URL'],
+        API_KEY: configData['API_KEY'],
+      ),
+    );
+    getIt.registerSingleton<HttpService>(
+      HttpService(),
+    );
+    getIt.registerSingleton<MovieService>(
+      MovieService(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
