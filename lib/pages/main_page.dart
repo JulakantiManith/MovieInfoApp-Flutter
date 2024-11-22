@@ -2,8 +2,13 @@ import 'dart:ui';
 //Packages
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+//widgets
+import '../widgets/movie_tile.dart';
+
 //models
 import '../model/search_category.dart';
+import '../model/movie.dart';
 
 class MainPage extends ConsumerWidget {
   late double _deviceHeight;
@@ -21,6 +26,7 @@ class MainPage extends ConsumerWidget {
 
   Widget _buildUI() {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: Container(
         height: _deviceHeight,
@@ -65,10 +71,15 @@ class MainPage extends ConsumerWidget {
       width: _deviceWidth * 0.88,
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _topBarWidget(),
+          Container(
+            height: _deviceHeight * 0.83,
+            padding: EdgeInsets.symmetric(vertical: _deviceHeight * 0.01),
+            child: _moviesListViewWidget(),
+          )
         ],
       ),
     );
@@ -155,5 +166,50 @@ class MainPage extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Widget _moviesListViewWidget() {
+    final List<Movie> _movies = [];
+
+    for (var i = 0; i < 20; i++) {
+      _movies.add(
+        Movie(
+          name: "Mortal Kombat",
+          language: "EN",
+          isAdult: false,
+          description:
+              "Mortal Kombat is a 2021 action-fantasy film based on the popular video game franchise. The movie follows Cole Young, a down-on-his-luck MMA fighter, who discovers he is part of a prophecy involving Earth's greatest warriors. They are chosen to defend the realm in a deadly tournament against the forces of Outworld, led by the sinister Shang Tsung. Packed with brutal combat, iconic characters like Scorpion, Sub-Zero, and Raiden, and a blend of supernatural elements, the film delivers intense action sequences and fan-favorite fatalities, staying true to the spirit of the games.",
+          posterPath: "/xGuOF1T3WmPsAcQEQJfnG7Ud9f8.jpg",
+          backdropPath: "/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg",
+          rating: 8.4,
+          releaseDate: "2022-08-05",
+        ),
+      );
+    }
+
+    if (_movies.length != 0) {
+      return ListView.builder(
+          itemCount: _movies.length,
+          itemBuilder: (BuildContext _context, int _count) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: _deviceHeight * 0.01, horizontal: 0),
+              child: GestureDetector(
+                onTap: () {},
+                child: MovieTile(
+                  movie: _movies[_count],
+                  height: _deviceHeight * 0.20,
+                  width: _deviceWidth * 0.85,
+                ),
+              ),
+            );
+          });
+    } else {
+      return Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.white,
+        ),
+      );
+    }
   }
 }
