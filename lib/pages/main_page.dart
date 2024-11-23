@@ -1,5 +1,6 @@
-import 'dart:ui';
 //Packages
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,10 +10,21 @@ import '../widgets/movie_tile.dart';
 //models
 import '../model/search_category.dart';
 import '../model/movie.dart';
+import '../model/main_page_data.dart';
+//Controllers
+import '../controllers/main_page_data_controller.dart';
+
+final mainPageDataControllerProvider =
+    StateNotifierProvider<MainPageDataController, MainPageData>((ref) {
+  return MainPageDataController();
+});
 
 class MainPage extends ConsumerWidget {
   late double _deviceHeight;
   late double _deviceWidth;
+
+  late MainPageDataController _mainPageDataController;
+  late MainPageData _mainPageData;
 
   late TextEditingController _searchTextFieldController;
 
@@ -20,6 +32,11 @@ class MainPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
+
+    _mainPageDataController =
+        ref.watch(mainPageDataControllerProvider.notifier);
+    _mainPageData = ref.watch(mainPageDataControllerProvider);
+
     _searchTextFieldController = TextEditingController();
     return _buildUI();
   }
@@ -169,23 +186,8 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget _moviesListViewWidget() {
-    final List<Movie> _movies = [];
+    final List<Movie> _movies = _mainPageData.movies;
 
-    for (var i = 0; i < 20; i++) {
-      _movies.add(
-        Movie(
-          name: "Mortal Kombat",
-          language: "EN",
-          isAdult: false,
-          description:
-              "Mortal Kombat is a 2021 action-fantasy film based on the popular video game franchise. The movie follows Cole Young, a down-on-his-luck MMA fighter, who discovers he is part of a prophecy involving Earth's greatest warriors. They are chosen to defend the realm in a deadly tournament against the forces of Outworld, led by the sinister Shang Tsung. Packed with brutal combat, iconic characters like Scorpion, Sub-Zero, and Raiden, and a blend of supernatural elements, the film delivers intense action sequences and fan-favorite fatalities, staying true to the spirit of the games.",
-          posterPath: "/xGuOF1T3WmPsAcQEQJfnG7Ud9f8.jpg",
-          backdropPath: "/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg",
-          rating: 8.4,
-          releaseDate: "2022-08-05",
-        ),
-      );
-    }
 
     if (_movies.length != 0) {
       return ListView.builder(
