@@ -41,4 +41,6 @@ factory Movie.fromJson(Map<String, dynamic> _json) {
     final AppConfig _appConfig = GetIt.instance.get<AppConfig>();
     return '${_appConfig.BASE_IMAGE_API_URL}${posterPath}';
   }
+  String get formattedRating => rating.toStringAsFixed(1);
+
 }

@@ -58,7 +58,7 @@ class MovieTile extends StatelessWidget {
                 ),
               ),
               Text(
-                movie.rating.toString(),
+                movie.formattedRating.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,

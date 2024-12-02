@@ -206,41 +206,39 @@ class MainPage extends ConsumerWidget {
   final List<Movie> _movies = _mainPageData.movies!;
 
   if (_movies.isNotEmpty) {
-    return Expanded(
-      child: NotificationListener(
-        onNotification: (dynamic _onScrollNotification) {
-          if (_onScrollNotification is ScrollEndNotification) {
-            final before = _onScrollNotification.metrics.extentBefore;
-            final max = _onScrollNotification.metrics.maxScrollExtent;
-            if (before == max) {
-              _mainPageDataController.getMovies();
-              return true;
-            }
-            return false;
+    return NotificationListener(
+      onNotification: (dynamic _onScrollNotification) {
+        if (_onScrollNotification is ScrollEndNotification) {
+          final before = _onScrollNotification.metrics.extentBefore;
+          final max = _onScrollNotification.metrics.maxScrollExtent;
+          if (before == max) {
+            _mainPageDataController.getMovies();
+            return true;
           }
           return false;
-        },
-        child: ListView.builder(
-          itemCount: _movies.length,
-          itemBuilder: (BuildContext _context, int _count) {
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: _deviceHeight! * 0.01, horizontal: _deviceWidth!*0),
-                  
-              child: GestureDetector(
-                onTap: () {
-                  ref.read(selectedMoviePosterURLProvider.notifier).state =
-                      _movies[_count].posterURL();
-                },
-                child: MovieTile(
-                  movie: _movies[_count],
-                  height: _deviceHeight! * 0.20,
-                  width: _deviceWidth! * 0.85,
-                ),
+        }
+        return false;
+      },
+      child: ListView.builder(
+        itemCount: _movies.length,
+        itemBuilder: (BuildContext _context, int _count) {
+          return Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: _deviceHeight! * 0.01, horizontal: _deviceWidth!*0),
+                
+            child: GestureDetector(
+              onTap: () {
+                ref.read(selectedMoviePosterURLProvider.notifier).state =
+                    _movies[_count].posterURL();
+              },
+              child: MovieTile(
+                movie: _movies[_count],
+                height: _deviceHeight! * 0.20,
+                width: _deviceWidth! * 0.85,
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   } else {
